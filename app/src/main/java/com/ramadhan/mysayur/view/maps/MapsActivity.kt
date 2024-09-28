@@ -51,6 +51,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var locationCallback: LocationCallback
 
     private var allLatLng = ArrayList<LatLng>()
+    private var movingMarker: Marker? = null
+
 
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -111,19 +113,18 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                         "onLocationRes ${location.latitude}, ${location.longitude}"
                     )
 
-                    //draw polyline
-                    allLatLng.add(LatLng(location.latitude, location.longitude))
+                    // Draw polyline
+                    val newLatLng = LatLng(location.latitude, location.longitude)
+                    allLatLng.add(newLatLng)
                     mMap.addPolyline(
                         PolylineOptions()
                             .color(Color.CYAN)
                             .width(20f)
                             .addAll(allLatLng)
-
                     )
 
-
-                    //set boundaries
-                    boundsBuilder.include(LatLng(location.latitude, location.longitude))
+                    // Set boundaries
+                    boundsBuilder.include(newLatLng)
                     val bounds = boundsBuilder.build()
                     mMap.animateCamera(
                         CameraUpdateFactory.newLatLngBounds(
@@ -132,9 +133,28 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                         )
                     )
 
+                    // Update or create moving marker
+                    if (movingMarker == null) {
+                        // Create a new marker if it doesn't exist
+                        movingMarker = mMap.addMarker(
+                            MarkerOptions()
+                                .position(newLatLng)
+                                .title("Current Location")
+                                .icon(
+                                    vectorTBitmap(
+                                        R.drawable.ic_android,
+                                        Color.RED
+                                    )
+                                )
+                        )
+                    } else {
+                        // Move the existing marker to the new location
+                        movingMarker?.position = newLatLng
+                    }
                 }
             }
         }
+
     }
 
     override fun onPause() {
@@ -144,7 +164,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     override fun onResume() {
         super.onResume()
-        if(isTracking){
+        if (isTracking) {
             startLocationUpdate()
         }
     }
@@ -175,8 +195,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private fun createLocationRequest() {
         val priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-        val interval = TimeUnit.SECONDS.toMillis(1)
-        val maxWaitTime = TimeUnit.SECONDS.toMillis(1)
+        val interval = TimeUnit.SECONDS.toMillis(5)
+        val maxWaitTime = TimeUnit.SECONDS.toMillis(5)
 
         locationRequest = LocationRequest.Builder(
             priority,
@@ -268,10 +288,28 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         ) == PackageManager.PERMISSION_GRANTED
     }
 
-    private fun clearMaps(){
+    private fun vectorTBitmap(@DrawableRes id: Int, @ColorInt color: Int): BitmapDescriptor {
+        val vectorDrawable = ResourcesCompat.getDrawable(resources, id, null)
+            ?: return BitmapDescriptorFactory.defaultMarker()
+
+        val bitmap = Bitmap.createBitmap(
+            vectorDrawable.intrinsicWidth,
+            vectorDrawable.intrinsicHeight,
+            Bitmap.Config.ARGB_8888
+        )
+
+        val canvas = Canvas(bitmap)
+        vectorDrawable.setBounds(0, 0, canvas.width, canvas.height)
+        DrawableCompat.setTint(vectorDrawable, color)
+        vectorDrawable.draw(canvas)
+        return BitmapDescriptorFactory.fromBitmap(bitmap)
+    }
+
+    private fun clearMaps() {
         mMap.clear()
         allLatLng.clear()
         boundsBuilder = LatLngBounds.Builder()
+        movingMarker = null
     }
 
 
