@@ -2,22 +2,30 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.main.MainActivity">
+    tools:context=".view.home.HomeFragment">
 
-    <androidx.fragment.app.FragmentContainerView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/fragment_container"
-        android:name="androidx.navigation.fragment.NavHostFragment"
-        app:defaultNavHost="true"
-        app:navGraph="@navigation/main_navigation"
+
+    <Button
+        android:id="@+id/btn_to_maps"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Lihat Maps"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+
+    <Button
+        android:id="@+id/btn_to_list"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="List Lokasi Saya"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btn_to_maps" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

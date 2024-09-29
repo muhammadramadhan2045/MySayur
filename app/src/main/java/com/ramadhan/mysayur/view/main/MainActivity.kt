@@ -8,7 +8,6 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.ramadhan.mysayur.R
 import com.ramadhan.mysayur.databinding.ActivityMainBinding
-import com.ramadhan.mysayur.view.maps.MapsActivity
 
 class MainActivity : AppCompatActivity() {
 
@@ -25,14 +24,6 @@ class MainActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-
-        binding.button
-            .setOnClickListener {
-            startActivity(Intent(this, MapsActivity::class.java))
-        }
-
-
-
 
     }
 }

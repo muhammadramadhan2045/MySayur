@@ -52,11 +52,26 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
 
     //maps
-    implementation("com.google.android.gms:play-services-maps:19.0.0")
-    implementation("com.google.android.gms:play-services-location:21.3.0")
-    implementation("androidx.work:work-runtime:2.8.1")
+    implementation(libs.play.services.maps)
+    implementation(libs.play.services.location)
+    implementation(libs.androidx.work.runtime)
 
     //navigation
-    implementation("androidx.navigation:navigation-fragment-ktx:2.7.7")
-    implementation("androidx.navigation:navigation-ui-ktx:2.7.7")
+    implementation(libs.androidx.navigation.fragment.ktx)
+    implementation(libs.androidx.navigation.ui.ktx)
+
+
+    //shimmer
+    implementation(libs.shimmer)
+
+    //lottie
+    implementation(libs.lottie)
+
+    //viewmodel &livedata
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.androidx.lifecycle.livedata.ktx)
+
+    //dependency injection koin
+    implementation(libs.koin.core)
+    implementation(libs.koin.android)
 }

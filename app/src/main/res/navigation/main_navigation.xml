@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_navigation"
+    app:startDestination="@id/homeFragment">
+
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.ramadhan.mysayur.view.home.HomeFragment"
+        android:label="fragment_home"
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_homeFragment_to_listLocationFragment"
+            app:destination="@id/listLocationFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_mapsFragment"
+            app:destination="@id/mapsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/listLocationFragment"
+        android:name="com.ramadhan.mysayur.view.listlocation.ListLocationFragment"
+        android:label="fragment_list_location"
+        tools:layout="@layout/fragment_list_location" />
+    <fragment
+        android:id="@+id/mapsFragment"
+        android:name="com.ramadhan.mysayur.view.maps.MapsFragment"
+        android:label="fragment_maps"
+        tools:layout="@layout/fragment_maps" />
+</navigation>

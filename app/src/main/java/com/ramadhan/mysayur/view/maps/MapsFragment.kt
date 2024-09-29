@@ -1,5 +1,7 @@
 package com.ramadhan.mysayur.view.maps
 
+import android.app.Activity.RESULT_CANCELED
+import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -7,16 +9,21 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.location.Location
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+
 import android.os.Bundle
 import android.os.Looper
 import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
 import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.startForegroundService
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import com.google.android.gms.common.api.ResolvableApiException
@@ -33,7 +40,6 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
-import com.google.android.gms.maps.model.Cap
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.Marker
@@ -41,13 +47,16 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.PolylineOptions
 import com.ramadhan.mysayur.R
 import com.ramadhan.mysayur.core.ui.service.LocationService
-import com.ramadhan.mysayur.databinding.ActivityMapsBinding
+import com.ramadhan.mysayur.databinding.FragmentMapsBinding
 import java.util.concurrent.TimeUnit
 
-class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
+class MapsFragment : Fragment() {
+
+    private var _binding: FragmentMapsBinding? = null
+    private val binding get() = _binding!!
+
 
     private lateinit var mMap: GoogleMap
-    private lateinit var binding: ActivityMapsBinding
     private var isTracking = false
 
     private lateinit var locationRequest: LocationRequest
@@ -56,28 +65,27 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     private var allLatLng = ArrayList<LatLng>()
     private var movingMarker: Marker? = null
 
-
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        binding = ActivityMapsBinding.inflate(layoutInflater)
-        setContentView(binding.root)
 
 
-        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        val mapFragment = supportFragmentManager
-            .findFragmentById(R.id.map) as SupportMapFragment
-        mapFragment.getMapAsync(this)
+
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        _binding = FragmentMapsBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
-    override fun onMapReady(googleMap: GoogleMap) {
+    private val callback = OnMapReadyCallback { googleMap ->
         mMap = googleMap
 
         getMyLastLocation()
         createLocationRequest()
         createLocationCallback()
+
         binding.btnStart.setOnClickListener {
             if (!isTracking) {
                 clearMaps()
@@ -92,18 +100,26 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
+        mapFragment?.getMapAsync(callback)
+
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireContext())
+    }
+
     private fun startLocationService() {
-        val intent = Intent(this, LocationService::class.java)
+        val intent = Intent(requireContext(), LocationService::class.java)
         if (Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            startForegroundService(intent)
+            startForegroundService(requireContext(),intent)
         } else {
-            startService(intent)
+            requireContext().startService(intent)
         }
     }
 
     private fun stopLocationService() {
-        val intent = Intent(this, LocationService::class.java)
-        stopService(intent)
+        val intent = Intent(requireContext(), LocationService::class.java)
+        requireContext().stopService(intent)
     }
 
     private fun stopLocationUpdate() {
@@ -227,7 +243,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         val builder = LocationSettingsRequest.Builder()
             .addLocationRequest(locationRequest)
 
-        val client = LocationServices.getSettingsClient(this)
+        val client = LocationServices.getSettingsClient(requireContext())
         client.checkLocationSettings(builder.build())
             .addOnSuccessListener {
                 getMyLastLocation()
@@ -240,7 +256,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                             IntentSenderRequest.Builder(e.resolution).build()
                         )
                     } catch (sendEx: Exception) {
-                        Toast.makeText(this, "${sendEx.message}", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), "${sendEx.message}", Toast.LENGTH_SHORT).show()
                         Log.e("MapsActivity", "Error get location setting: ${sendEx.message}")
                     }
 
@@ -256,7 +272,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 if (location != null) {
                     showStartMarker(location)
                 } else {
-                    Toast.makeText(this, "Lokasi tidak ditemukan", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "Lokasi tidak ditemukan", Toast.LENGTH_SHORT).show()
                 }
             }
 
@@ -302,7 +318,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private fun checkPermission(permission: String): Boolean {
         return ContextCompat.checkSelfPermission(
-            this,
+            requireContext(),
             permission
         ) == PackageManager.PERMISSION_GRANTED
     }
@@ -332,4 +348,9 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
 
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 }
