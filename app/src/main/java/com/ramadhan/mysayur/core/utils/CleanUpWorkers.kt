@@ -81,4 +81,6 @@ private fun calculateDelayUntil10PM(currentTime: Long): Long {
     if (currentTime > calendar.timeInMillis){
         calendar.add(Calendar.DAY_OF_MONTH, 1)
     }
-1
+
+    return calendar.timeInMillis - currentTime
+}
