@@ -4,6 +4,7 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import com.ramadhan.mysayur.core.domain.model.LocationTracker
 import java.util.concurrent.TimeUnit
 
 class LocationDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
@@ -59,5 +60,20 @@ class LocationDatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATAB
         val result = cursor.count > 0
         cursor.close()
         return result
+    }
+
+
+    fun getAllLocations(): List<LocationTracker> {
+        val db = readableDatabase
+        val cursor = db.rawQuery("SELECT * FROM $TABLE_LOCATION", null)
+        val locations = mutableListOf<LocationTracker>()
+        while (cursor.moveToNext()) {
+            val latitude = cursor.getDouble(cursor.getColumnIndexOrThrow(COLUMN_LATITUDE))
+            val longitude = cursor.getDouble(cursor.getColumnIndexOrThrow(COLUMN_LONGITUDE))
+            val timestamp = cursor.getLong(cursor.getColumnIndexOrThrow(COLUMN_TIMESTAMP))
+            locations.add(LocationTracker(latitude, longitude, timestamp))
+        }
+        cursor.close()
+        return locations
     }
 }

@@ -49,6 +49,7 @@ import com.ramadhan.mysayur.R
 import com.ramadhan.mysayur.core.ui.service.LocationService
 import com.ramadhan.mysayur.databinding.FragmentMapsBinding
 import java.util.concurrent.TimeUnit
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MapsFragment : Fragment() {
 
@@ -67,8 +68,7 @@ class MapsFragment : Fragment() {
 
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
 
-
-
+    private val mapsViewModel: MapsViewModel by viewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater,
