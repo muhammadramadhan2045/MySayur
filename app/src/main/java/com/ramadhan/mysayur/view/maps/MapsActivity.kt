@@ -1,10 +1,12 @@
 package com.ramadhan.mysayur.view.maps
 
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
 import android.location.Location
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Looper
@@ -38,6 +40,7 @@ import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.PolylineOptions
 import com.ramadhan.mysayur.R
+import com.ramadhan.mysayur.core.ui.service.LocationService
 import com.ramadhan.mysayur.databinding.ActivityMapsBinding
 import java.util.concurrent.TimeUnit
 
@@ -80,11 +83,27 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 clearMaps()
                 updateTrackingStatus(true)
                 startLocationUpdate()
+                startLocationService()
             } else {
                 updateTrackingStatus(false)
                 stopLocationUpdate()
+                stopLocationService()
             }
         }
+    }
+
+    private fun startLocationService() {
+        val intent = Intent(this, LocationService::class.java)
+        if (Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            startForegroundService(intent)
+        } else {
+            startService(intent)
+        }
+    }
+
+    private fun stopLocationService() {
+        val intent = Intent(this, LocationService::class.java)
+        stopService(intent)
     }
 
     private fun stopLocationUpdate() {
@@ -195,8 +214,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private fun createLocationRequest() {
         val priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-        val interval = TimeUnit.SECONDS.toMillis(5)
-        val maxWaitTime = TimeUnit.SECONDS.toMillis(5)
+        val interval = TimeUnit.SECONDS.toMillis(1)
+        val maxWaitTime = TimeUnit.SECONDS.toMillis(1)
 
         locationRequest = LocationRequest.Builder(
             priority,
