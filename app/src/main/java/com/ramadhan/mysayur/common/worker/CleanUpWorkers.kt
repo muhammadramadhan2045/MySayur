@@ -81,8 +81,8 @@ fun scheduleCleanUp(context: Context) {
 private fun calculateDelayUntil10PM(currentTime: Long): Long {
     val calendar = Calendar.getInstance()
     calendar.timeInMillis = currentTime
-    calendar.set(Calendar.HOUR_OF_DAY, 12)
-    calendar.set(Calendar.MINUTE, 30)
+    calendar.set(Calendar.HOUR_OF_DAY, 22)
+    calendar.set(Calendar.MINUTE, 0)
     calendar.set(Calendar.SECOND, 0)
 
 
