@@ -33,4 +33,5 @@ class ListLocationViewModel(
         }
     }
 
+    fun isDataExist() = locationUseCase.isDataExist()
 }

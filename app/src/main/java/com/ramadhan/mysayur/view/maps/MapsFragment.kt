@@ -46,7 +46,7 @@ import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.PolylineOptions
 import com.ramadhan.mysayur.R
-import com.ramadhan.mysayur.core.ui.service.LocationService
+import com.ramadhan.mysayur.common.service.LocationService
 import com.ramadhan.mysayur.databinding.FragmentMapsBinding
 import java.util.concurrent.TimeUnit
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -56,15 +56,16 @@ class MapsFragment : Fragment() {
     private var _binding: FragmentMapsBinding? = null
     private val binding get() = _binding!!
 
-
     private lateinit var mMap: GoogleMap
     private var isTracking = false
 
-    private lateinit var locationRequest: LocationRequest
-    private lateinit var locationCallback: LocationCallback
+    private var locationRequest: LocationRequest? = null
+    private var locationCallback: LocationCallback? = null
 
     private var allLatLng = ArrayList<LatLng>()
     private var movingMarker: Marker? = null
+
+    private var isFromList: Boolean = false
 
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
 
@@ -81,21 +82,34 @@ class MapsFragment : Fragment() {
 
     private val callback = OnMapReadyCallback { googleMap ->
         mMap = googleMap
+        if (isFromList) {
+            mapsViewModel.getAllLocations()
+            mapsViewModel.locations.observe(viewLifecycleOwner) {
+                for (location in it) {
+                    val latLng = LatLng(location.latitude, location.longitude)
+                    mMap.addMarker(
+                        MarkerOptions()
+                            .position(latLng)
+                            .title(location.latitude.toString())
+                    )
+                }
+            }
+        } else {
+            getMyLastLocation()
+            createLocationRequest()
+            createLocationCallback()
 
-        getMyLastLocation()
-        createLocationRequest()
-        createLocationCallback()
-
-        binding.btnStart.setOnClickListener {
-            if (!isTracking) {
-                clearMaps()
-                updateTrackingStatus(true)
-                startLocationUpdate()
-                startLocationService()
-            } else {
-                updateTrackingStatus(false)
-                stopLocationUpdate()
-                stopLocationService()
+            binding.btnStart.setOnClickListener {
+                if (!isTracking) {
+                    clearMaps()
+                    updateTrackingStatus(true)
+                    startLocationUpdate()
+                    startLocationService()
+                } else {
+                    updateTrackingStatus(false)
+                    stopLocationUpdate()
+                    stopLocationService()
+                }
             }
         }
     }
@@ -105,13 +119,26 @@ class MapsFragment : Fragment() {
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
         mapFragment?.getMapAsync(callback)
 
-        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireContext())
+
+        val bundle = arguments?.getBoolean("isFromList")
+
+        if (bundle != null) {
+            isFromList = bundle
+        }
+
+        if (isFromList) {
+            binding.btnStart.visibility = View.GONE
+        } else {
+            binding.btnStart.visibility = View.VISIBLE
+        }
+        fusedLocationProviderClient =
+            LocationServices.getFusedLocationProviderClient(requireContext())
     }
 
     private fun startLocationService() {
         val intent = Intent(requireContext(), LocationService::class.java)
         if (Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            startForegroundService(requireContext(),intent)
+            startForegroundService(requireContext(), intent)
         } else {
             requireContext().startService(intent)
         }
@@ -123,14 +150,14 @@ class MapsFragment : Fragment() {
     }
 
     private fun stopLocationUpdate() {
-        fusedLocationProviderClient.removeLocationUpdates(locationCallback)
+        fusedLocationProviderClient.removeLocationUpdates(locationCallback!!)
     }
 
     private fun startLocationUpdate() {
         try {
             fusedLocationProviderClient.requestLocationUpdates(
-                locationRequest,
-                locationCallback,
+                locationRequest!!,
+                locationCallback!!,
                 Looper.getMainLooper()
             )
 
@@ -194,12 +221,14 @@ class MapsFragment : Fragment() {
 
     override fun onPause() {
         super.onPause()
-        stopLocationUpdate()
+        if (!isFromList) {
+            stopLocationUpdate()
+        }
     }
 
     override fun onResume() {
         super.onResume()
-        if (isTracking) {
+        if (!isFromList && isTracking) {
             startLocationUpdate()
         }
     }
@@ -230,8 +259,8 @@ class MapsFragment : Fragment() {
 
     private fun createLocationRequest() {
         val priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-        val interval = TimeUnit.SECONDS.toMillis(1)
-        val maxWaitTime = TimeUnit.SECONDS.toMillis(1)
+        val interval = TimeUnit.MINUTES.toMillis(5)
+        val maxWaitTime = TimeUnit.MINUTES.toMillis(5)
 
         locationRequest = LocationRequest.Builder(
             priority,
@@ -241,7 +270,7 @@ class MapsFragment : Fragment() {
         }.build()
 
         val builder = LocationSettingsRequest.Builder()
-            .addLocationRequest(locationRequest)
+            .addLocationRequest(locationRequest!!)
 
         val client = LocationServices.getSettingsClient(requireContext())
         client.checkLocationSettings(builder.build())
@@ -256,7 +285,8 @@ class MapsFragment : Fragment() {
                             IntentSenderRequest.Builder(e.resolution).build()
                         )
                     } catch (sendEx: Exception) {
-                        Toast.makeText(requireContext(), "${sendEx.message}", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), "${sendEx.message}", Toast.LENGTH_SHORT)
+                            .show()
                         Log.e("MapsActivity", "Error get location setting: ${sendEx.message}")
                     }
 
@@ -272,7 +302,8 @@ class MapsFragment : Fragment() {
                 if (location != null) {
                     showStartMarker(location)
                 } else {
-                    Toast.makeText(requireContext(), "Lokasi tidak ditemukan", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "Lokasi tidak ditemukan", Toast.LENGTH_SHORT)
+                        .show()
                 }
             }
 
@@ -311,7 +342,7 @@ class MapsFragment : Fragment() {
             }
 
             else -> {
-                // Permission denied
+                Toast.makeText(requireContext(), "Permission denied", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -346,7 +377,6 @@ class MapsFragment : Fragment() {
         boundsBuilder = LatLngBounds.Builder()
         movingMarker = null
     }
-
 
 
     override fun onDestroyView() {

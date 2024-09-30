@@ -6,7 +6,9 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.ramadhan.mysayur.R
 import com.ramadhan.mysayur.core.ui.adapter.LocationAdapter
 import com.ramadhan.mysayur.databinding.FragmentListLocationBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -39,6 +41,16 @@ class ListLocationFragment : Fragment() {
         showLoading()
         showRvLocList()
 
+        binding.fabAddLocation.setOnClickListener {
+            if(findNavController().currentDestination?.id == R.id.listLocationFragment){
+                val bundle = Bundle().apply {
+                    putBoolean("isFromList", true)
+                }
+                findNavController().navigate(R.id.action_listLocationFragment_to_mapsFragment,bundle)
+            }
+
+
+        }
     }
 
     private fun showLoading() {
@@ -66,8 +78,10 @@ class ListLocationFragment : Fragment() {
         listLocViewModel.isEmpty.observe(viewLifecycleOwner) {
             if (!it) {
                 binding.tvEmptyLocation.visibility = View.VISIBLE
+                binding.fabAddLocation.visibility = View.GONE
             } else {
                 binding.tvEmptyLocation.visibility = View.GONE
+                binding.fabAddLocation.visibility = View.VISIBLE
             }
         }
     }

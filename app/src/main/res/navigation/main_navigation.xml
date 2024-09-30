@@ -22,7 +22,11 @@
         android:id="@+id/listLocationFragment"
         android:name="com.ramadhan.mysayur.view.listlocation.ListLocationFragment"
         android:label="fragment_list_location"
-        tools:layout="@layout/fragment_list_location" />
+        tools:layout="@layout/fragment_list_location" >
+        <action
+            android:id="@+id/action_listLocationFragment_to_mapsFragment"
+            app:destination="@id/mapsFragment" />
+    </fragment>
     <fragment
         android:id="@+id/mapsFragment"
         android:name="com.ramadhan.mysayur.view.maps.MapsFragment"
