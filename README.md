@@ -43,6 +43,6 @@
 1. Clone repositori ini:
 
    ```bash
-   git clone https://github.com/username/mysayur-location-tracking.git
+   [git clone https://github.com/username/mysayur-location-tracking.git](https://github.com/muhammadramadhan2045/MySayur.git)
 
 untuk brach utam : jetpack_navigation
