@@ -1,7 +1,6 @@
     package com.ramadhan.mysayur.common.service
 
     import android.Manifest
-    import android.annotation.SuppressLint
     import android.app.Notification
     import android.app.NotificationChannel
     import android.app.NotificationManager
@@ -18,7 +17,6 @@
     import com.google.android.gms.location.LocationRequest
     import com.google.android.gms.location.LocationResult
     import com.google.android.gms.location.LocationServices
-    import com.ramadhan.mysayur.core.domain.model.LocationTracker
     import com.ramadhan.mysayur.core.domain.usecase.LocationUseCase
     import org.koin.android.ext.android.inject
     import java.util.concurrent.TimeUnit
@@ -28,7 +26,7 @@
         private lateinit var locationRequest: LocationRequest
         private lateinit var locationCallback: LocationCallback
 
-        private val locationUseCase: com.ramadhan.mysayur.core.domain.usecase.LocationUseCase by inject()
+        private val locationUseCase: LocationUseCase by inject()
 
         override fun onCreate() {
             super.onCreate()

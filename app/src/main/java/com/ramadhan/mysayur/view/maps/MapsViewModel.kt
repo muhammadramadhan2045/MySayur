@@ -1,6 +1,5 @@
 package com.ramadhan.mysayur.view.maps
 
-import android.location.Location
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -9,11 +8,11 @@ import com.ramadhan.mysayur.core.domain.model.LocationTracker
 import com.ramadhan.mysayur.core.domain.usecase.LocationUseCase
 
 class MapsViewModel(
-    private val locationUseCase: com.ramadhan.mysayur.core.domain.usecase.LocationUseCase
+    private val locationUseCase: LocationUseCase
 ) : ViewModel() {
 
-    private val _locations: MutableLiveData<List<com.ramadhan.mysayur.core.domain.model.LocationTracker>> = MutableLiveData()
-    val locations: LiveData<List<com.ramadhan.mysayur.core.domain.model.LocationTracker>> get() = _locations
+    private val _locations: MutableLiveData<List<LocationTracker>> = MutableLiveData()
+    val locations: LiveData<List<LocationTracker>> get() = _locations
 
 
     fun getAllLocations() {

@@ -12,7 +12,6 @@ import androidx.work.WorkManager
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.ramadhan.mysayur.R
-import com.ramadhan.mysayur.core.domain.usecase.LocationUseCase
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.util.Calendar

@@ -8,8 +8,8 @@ import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 val useCaseModule = module {
-    factory<com.ramadhan.mysayur.core.domain.usecase.LocationUseCase> {
-        com.ramadhan.mysayur.core.domain.usecase.LocationInteractor(get())
+    factory<LocationUseCase> {
+        LocationInteractor(get())
     }
 }
 

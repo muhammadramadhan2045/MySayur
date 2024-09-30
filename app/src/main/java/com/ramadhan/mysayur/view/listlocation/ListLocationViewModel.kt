@@ -8,14 +8,14 @@ import com.ramadhan.mysayur.core.domain.model.LocationTracker
 import com.ramadhan.mysayur.core.domain.usecase.LocationUseCase
 
 class ListLocationViewModel(
-    private val locationUseCase: com.ramadhan.mysayur.core.domain.usecase.LocationUseCase
+    private val locationUseCase: LocationUseCase
 ) : ViewModel() {
 
     private val _loading: MutableLiveData<Boolean> = MutableLiveData()
     val loading: LiveData<Boolean> get() = _loading
 
-    private val _locations: MutableLiveData<List<com.ramadhan.mysayur.core.domain.model.LocationTracker>> = MutableLiveData()
-    val locations: LiveData<List<com.ramadhan.mysayur.core.domain.model.LocationTracker>> get() = _locations
+    private val _locations: MutableLiveData<List<LocationTracker>> = MutableLiveData()
+    val locations: LiveData<List<LocationTracker>> get() = _locations
 
     private val _isEmpty: MutableLiveData<Boolean> = MutableLiveData()
     val isEmpty: LiveData<Boolean> get() = _isEmpty
