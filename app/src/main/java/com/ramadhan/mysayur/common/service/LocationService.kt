@@ -28,7 +28,7 @@
         private lateinit var locationRequest: LocationRequest
         private lateinit var locationCallback: LocationCallback
 
-        private val locationUseCase: LocationUseCase by inject()
+        private val locationUseCase: com.ramadhan.mysayur.core.domain.usecase.LocationUseCase by inject()
 
         override fun onCreate() {
             super.onCreate()
@@ -100,7 +100,7 @@
         private fun saveLocationToUseCase(location: Location?) {
             location?.let {
                 locationUseCase.saveLocation(
-                    LocationTracker(
+                    com.ramadhan.mysayur.core.domain.model.LocationTracker(
                         latitude = it.latitude,
                         longitude = it.longitude,
                         timestamp = it.time

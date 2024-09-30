@@ -47,4 +47,5 @@ shimmer = { module = "com.facebook.shimmer:shimmer", version.ref = "shimmer" }
 android-application = { id = "com.android.application", version.ref = "agp" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 google-android-libraries-mapsplatform-secrets-gradle-plugin = { id = "com.google.android.libraries.mapsplatform.secrets-gradle-plugin", version.ref = "googleAndroidLibrariesMapsplatformSecretsGradlePlugin" }
+android-library = { id = "com.android.library", version.ref = "agp" }
 

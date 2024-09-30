@@ -21,3 +21,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "MySayur"
 include(":app")
+include(":core")

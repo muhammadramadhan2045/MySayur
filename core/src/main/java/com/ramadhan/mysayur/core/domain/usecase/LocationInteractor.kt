@@ -5,7 +5,7 @@ import com.ramadhan.mysayur.core.domain.repository.ILocationRepository
 
 class LocationInteractor(
     private val locationRepository: ILocationRepository
-): LocationUseCase{
+): LocationUseCase {
     override fun saveLocation(location: LocationTracker) {
         locationRepository.saveLocation(location)
     }

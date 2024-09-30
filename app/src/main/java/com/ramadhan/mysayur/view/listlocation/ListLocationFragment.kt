@@ -64,7 +64,7 @@ class ListLocationFragment : Fragment() {
     }
 
     private fun showRvLocList() {
-        val locationAdapter = LocationAdapter()
+        val locationAdapter = com.ramadhan.mysayur.core.ui.adapter.LocationAdapter()
         binding.rvLocation.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = locationAdapter

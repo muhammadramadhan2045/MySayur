@@ -24,8 +24,8 @@ class MyApplication : Application() {
                 listOf(
                     useCaseModule,
                     viewModelModule,
-                    repositoryModule,
-                    databaseModule
+                    com.ramadhan.mysayur.core.di.repositoryModule,
+                    com.ramadhan.mysayur.core.di.databaseModule
                 )
             )
         }

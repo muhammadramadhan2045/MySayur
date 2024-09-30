@@ -9,11 +9,11 @@ import com.ramadhan.mysayur.core.domain.model.LocationTracker
 import com.ramadhan.mysayur.core.domain.usecase.LocationUseCase
 
 class MapsViewModel(
-    private val locationUseCase: LocationUseCase
+    private val locationUseCase: com.ramadhan.mysayur.core.domain.usecase.LocationUseCase
 ) : ViewModel() {
 
-    private val _locations: MutableLiveData<List<LocationTracker>> = MutableLiveData()
-    val locations: LiveData<List<LocationTracker>> get() = _locations
+    private val _locations: MutableLiveData<List<com.ramadhan.mysayur.core.domain.model.LocationTracker>> = MutableLiveData()
+    val locations: LiveData<List<com.ramadhan.mysayur.core.domain.model.LocationTracker>> get() = _locations
 
 
     fun getAllLocations() {

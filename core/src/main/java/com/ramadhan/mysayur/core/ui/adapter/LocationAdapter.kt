@@ -5,15 +5,17 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.ramadhan.mysayur.core.databinding.ItemLocationBinding
 import com.ramadhan.mysayur.core.domain.model.LocationTracker
-import com.ramadhan.mysayur.databinding.ItemLocationBinding
 
-class LocationAdapter : ListAdapter<LocationTracker, LocationAdapter.LocationViewHolder>(DIFF_CALLBACK){
+class LocationAdapter : ListAdapter<LocationTracker, LocationAdapter.LocationViewHolder>(
+    DIFF_CALLBACK
+){
 
     class LocationViewHolder (
         private val binding : ItemLocationBinding
     ): RecyclerView.ViewHolder(binding.root){
-        fun bind(location: LocationTracker){
+        fun bind(location: com.ramadhan.mysayur.core.domain.model.LocationTracker){
             with(binding){
                 tvLatitude.text = location.latitude.toString()
                 tvLongitude.text = location.longitude.toString()
@@ -33,7 +35,7 @@ class LocationAdapter : ListAdapter<LocationTracker, LocationAdapter.LocationVie
 
     companion object{
         private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<LocationTracker>(){
-            override fun areItemsTheSame(oldItem: LocationTracker, newItem: LocationTracker): Boolean {
+            override fun areItemsTheSame(oldItem: LocationTracker, newItem:LocationTracker): Boolean {
                 return oldItem == newItem
             }
 

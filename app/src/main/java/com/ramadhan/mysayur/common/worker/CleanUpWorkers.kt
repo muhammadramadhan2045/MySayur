@@ -24,7 +24,7 @@ class CleanUpWorkers(
 ) : Worker(context, workerParams) ,KoinComponent{
 
 
-    private val locationUseCase: LocationUseCase by inject()
+    private val locationUseCase: com.ramadhan.mysayur.core.domain.usecase.LocationUseCase by inject()
 
     override fun doWork(): Result {
         Log.d("CleanUpWorkers", "doWork at: " + System.currentTimeMillis())
