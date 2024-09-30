@@ -36,17 +36,40 @@ class ListLocationFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val locations = listLocViewModel.getAllLocations()
+        showLoading()
+        showRvLocList()
 
+    }
+
+    private fun showLoading() {
+        listLocViewModel.loading.observe(viewLifecycleOwner) {
+            if (it) {
+                binding.progressBar.visibility = View.VISIBLE
+            } else {
+                binding.progressBar.visibility = View.GONE
+            }
+        }
+    }
+
+    private fun showRvLocList() {
         val locationAdapter = LocationAdapter()
-
-
         binding.rvLocation.apply {
-            layoutManager = LinearLayoutManager(requireContext())
+            layoutManager = LinearLayoutManager(context)
             adapter = locationAdapter
         }
-        locationAdapter.submitList(locations)
 
+        listLocViewModel.getAllLocations()
+        listLocViewModel.locations.observe(viewLifecycleOwner) {
+            locationAdapter.submitList(it)
+        }
+
+        listLocViewModel.isEmpty.observe(viewLifecycleOwner) {
+            if (!it) {
+                binding.tvEmptyLocation.visibility = View.VISIBLE
+            } else {
+                binding.tvEmptyLocation.visibility = View.GONE
+            }
+        }
     }
 
 
