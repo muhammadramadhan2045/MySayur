@@ -74,4 +74,10 @@ dependencies {
     //dependency injection koin
     implementation(libs.koin.core)
     implementation(libs.koin.android)
+
+    //mockito
+    testImplementation(libs.mockito.core)
+    testImplementation(libs.mockito.inline)
+    testImplementation(libs.mockito.kotlin)
+    testImplementation(libs.kotlinx.coroutines.test)
 }
