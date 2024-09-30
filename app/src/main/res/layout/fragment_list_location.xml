@@ -52,7 +52,7 @@
         android:id="@+id/fab_add_location"
         android:visibility="gone"
         android:importantForAccessibility="no"
-        android:src="@drawable/ic_android"
+        android:src="@drawable/ic_map"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 

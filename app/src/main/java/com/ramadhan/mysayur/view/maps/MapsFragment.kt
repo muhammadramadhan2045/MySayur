@@ -92,6 +92,18 @@ class MapsFragment : Fragment() {
                             .position(latLng)
                             .title(location.latitude.toString())
                     )
+
+                    //focusing to all location
+                    val bounds = boundsBuilder
+                    bounds.include(latLng)
+                    mMap.animateCamera(
+                        CameraUpdateFactory.newLatLngBounds(
+                            bounds.build(),
+                            resources.displayMetrics.widthPixels,
+                            resources.displayMetrics.heightPixels,
+                            300
+                        )
+                    )
                 }
             }
         } else {
@@ -137,7 +149,7 @@ class MapsFragment : Fragment() {
 
     private fun startLocationService() {
         val intent = Intent(requireContext(), LocationService::class.java)
-        if (Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             startForegroundService(requireContext(), intent)
         } else {
             requireContext().startService(intent)
@@ -178,12 +190,7 @@ class MapsFragment : Fragment() {
                     // Draw polyline
                     val newLatLng = LatLng(location.latitude, location.longitude)
                     allLatLng.add(newLatLng)
-                    mMap.addPolyline(
-                        PolylineOptions()
-                            .color(Color.CYAN)
-                            .width(20f)
-                            .addAll(allLatLng)
-                    )
+
 
                     // Set boundaries
                     boundsBuilder.include(newLatLng)
@@ -236,9 +243,9 @@ class MapsFragment : Fragment() {
     private fun updateTrackingStatus(newStatus: Boolean) {
         isTracking = newStatus
         if (isTracking) {
-            binding.btnStart.text = "Stop Running"
+            binding.btnStart.text = getString(R.string.stop_tracking)
         } else {
-            binding.btnStart.text = "Start Running"
+            binding.btnStart.text = getString(R.string.start_tracking)
         }
     }
 
@@ -302,7 +309,8 @@ class MapsFragment : Fragment() {
                 if (location != null) {
                     showStartMarker(location)
                 } else {
-                    Toast.makeText(requireContext(), "Lokasi tidak ditemukan", Toast.LENGTH_SHORT)
+                    Toast.makeText(requireContext(),
+                        getString(R.string.location_not_found), Toast.LENGTH_SHORT)
                         .show()
                 }
             }
@@ -322,7 +330,7 @@ class MapsFragment : Fragment() {
         mMap.addMarker(
             MarkerOptions()
                 .position(startLocation)
-                .title("Lokasi awal saya")
+                .title(getString(R.string.my_first_location_label))
         )
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(startLocation, 17f))
     }
@@ -342,7 +350,8 @@ class MapsFragment : Fragment() {
             }
 
             else -> {
-                Toast.makeText(requireContext(), "Permission denied", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(),
+                    getString(R.string.permission_denied_label), Toast.LENGTH_SHORT).show()
             }
         }
     }
