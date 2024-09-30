@@ -4,6 +4,7 @@ import android.app.Activity.RESULT_CANCELED
 import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
@@ -42,6 +43,7 @@ import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
+import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.PolylineOptions
@@ -82,6 +84,9 @@ class MapsFragment : Fragment() {
 
     private val callback = OnMapReadyCallback { googleMap ->
         mMap = googleMap
+
+        setMapStyle()
+
         if (isFromList) {
             mapsViewModel.getAllLocations()
             mapsViewModel.locations.observe(viewLifecycleOwner) {
@@ -91,6 +96,12 @@ class MapsFragment : Fragment() {
                         MarkerOptions()
                             .position(latLng)
                             .title(location.latitude.toString())
+                            .icon(
+                                vectorTBitmap(
+                                    R.drawable.ic_motor,
+                                    Color.CYAN
+                                )
+                            )
                     )
 
                     //focusing to all location
@@ -123,6 +134,23 @@ class MapsFragment : Fragment() {
                     stopLocationService()
                 }
             }
+        }
+    }
+
+    private fun setMapStyle() {
+        try {
+            val success =
+                mMap.setMapStyle(
+                    MapStyleOptions.loadRawResourceStyle(
+                        requireContext(),
+                        R.raw.map_style
+                    )
+                )
+            if (!success) {
+                Log.e("MapsFragment", "Style parsing failed.")
+            }
+        } catch (exception: Resources.NotFoundException) {
+            Log.e("MapsFragment", "Can't find style. Error: ", exception)
         }
     }
 
@@ -211,8 +239,8 @@ class MapsFragment : Fragment() {
                                 .title("Current Location")
                                 .icon(
                                     vectorTBitmap(
-                                        R.drawable.ic_android,
-                                        Color.RED
+                                        R.drawable.ic_motor,
+                                        Color.CYAN
                                     )
                                 )
                         )
@@ -309,8 +337,10 @@ class MapsFragment : Fragment() {
                 if (location != null) {
                     showStartMarker(location)
                 } else {
-                    Toast.makeText(requireContext(),
-                        getString(R.string.location_not_found), Toast.LENGTH_SHORT)
+                    Toast.makeText(
+                        requireContext(),
+                        getString(R.string.location_not_found), Toast.LENGTH_SHORT
+                    )
                         .show()
                 }
             }
@@ -331,6 +361,12 @@ class MapsFragment : Fragment() {
             MarkerOptions()
                 .position(startLocation)
                 .title(getString(R.string.my_first_location_label))
+                .icon(
+                    vectorTBitmap(
+                        R.drawable.ic_motor,
+                        Color.CYAN
+                    )
+                )
         )
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(startLocation, 17f))
     }
@@ -350,8 +386,7 @@ class MapsFragment : Fragment() {
             }
 
             else -> {
-                Toast.makeText(requireContext(),
-                    getString(R.string.permission_denied_label), Toast.LENGTH_SHORT).show()
+                //do nothing
             }
         }
     }
