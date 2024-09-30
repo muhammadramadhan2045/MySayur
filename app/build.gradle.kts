@@ -80,4 +80,7 @@ dependencies {
     testImplementation(libs.mockito.inline)
     testImplementation(libs.mockito.kotlin)
     testImplementation(libs.kotlinx.coroutines.test)
+
+    //splash
+    implementation(libs.androidx.core.splashscreen)
 }

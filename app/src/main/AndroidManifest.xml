@@ -23,10 +23,11 @@
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="ISI API KEY nya bang" />
+            android:value="AIzaSyDmNT_v3lSUmQyoQhsfLVKjUV2j7Wg78G8" />
 
         <activity
             android:name=".view.main.MainActivity"
+            android:theme="@style/Theme.App.SplashScreen"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
